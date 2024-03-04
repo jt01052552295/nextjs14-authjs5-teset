@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 
 export async function middleware() {
   const session = await auth()
+  console.log('middleware', session)
   if (!session) {
     return NextResponse.redirect(`${process.env.NEXT_PUBLIC_BASE_URL}/login`)
   }

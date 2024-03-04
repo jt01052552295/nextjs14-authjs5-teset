@@ -6,11 +6,33 @@ export const {
   handlers: { GET, POST },
   auth,
   signIn,
+  signOut,
 } = NextAuth({
   pages: {
     // 로그인, 회원가입 url을 등록함.
     signIn: '/login',
     newUser: '/signup',
+  },
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'credentials') {
+        console.log('credentials - signin', user)
+      }
+      if (account?.provider === 'google') {
+        console.log('google - signin', user)
+        // return profile?.email_verified && profile?.email?.endsWith('@gmail.com')
+      }
+      if (account?.provider === 'github') {
+        console.log('github - signin', user)
+        // return profile?.email_verified && profile?.email?.endsWith('@gmail.com')
+      }
+      return true // Do different verification for other providers that don't have `email_verified`
+    },
+    session({ session, token, user }) {
+      // session.user = token.user as User
+      //   console.log('auth.ts session', session)
+      return session
+    },
   },
   providers: [
     CredentialsProvider({

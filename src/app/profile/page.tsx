@@ -1,14 +1,19 @@
 import React from 'react'
-import { auth } from '@/auth'
+import { auth, signOut } from '@/auth'
 import { redirect } from 'next/navigation'
+import Logout from '../_component/Logout'
 
 const ProfilePage = async () => {
-  const session = await auth()
-  if (session?.user) {
-    redirect('/login')
-    return null
-  }
-  return <div>ProfilePage</div>
+  // const { user }: any = await auth()
+  // console.log('ProfilePage', user)
+  return (
+    <div>
+      ProfilePage{' '}
+      <div className="ml-auto flex items-center gap-x-2">
+        <Logout />
+      </div>
+    </div>
+  )
 }
 
 export default ProfilePage

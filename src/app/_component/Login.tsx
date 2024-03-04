@@ -18,7 +18,7 @@ export default function LoginModal() {
       // auth.ts 에 등록한 signIn이 여기서 쓴다.
       await signIn('credentials', {
         username: id,
-        password,
+        password: password,
         redirect: false, // 서버쪽에서 리다이렉트 함.
       })
       router.replace('/profile') // 일단 클라이언트에서 리다이렉트
