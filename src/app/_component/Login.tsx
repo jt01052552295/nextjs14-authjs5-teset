@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { ChangeEventHandler, FormEventHandler, useState } from 'react'
 import { redirect, useRouter } from 'next/navigation'
 import { signIn } from 'next-auth/react' // 클라이언트
@@ -55,7 +56,9 @@ export default function LoginModal() {
         </div>
         <div>{message}</div>
 
-        <button disabled={!id && !password}>로그인하기</button>
+        <button disabled={!id && !password}>로그인</button>
+        <br />
+        <Link href="/signup">가입페이지</Link>
       </form>
     </div>
   )
