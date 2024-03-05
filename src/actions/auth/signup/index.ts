@@ -1,22 +1,37 @@
 'use server'
 import { auth } from '@/auth'
+import bcrypt from 'bcryptjs'
 import { InputType, ReturnType } from './types'
 import { revalidatePath } from 'next/cache'
 import { db } from '@/lib/db'
 import { ActionAuthSignUp } from './schema'
 import { createSafeAction } from '@/lib/create-safe-action'
+import { getUserByEmail } from '@/data/user'
+import { generateVerificationToken } from '@/lib/tokens'
+import { sendVerificationEmail } from '@/lib/mail'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
-  const { id, password } = data
+  const { name, email, password } = data
+  const hashedPassword = await bcrypt.hash(password, 10)
+
+  const existingUser = await getUserByEmail(email)
+  if (existingUser) {
+    return { error: 'Email already in use!' }
+  }
+
   let user
   try {
     // throw Error("test");
     user = await db.user.create({
       data: {
-        id,
-        password,
+        name,
+        email,
+        password: hashedPassword,
       },
     })
+
+    const verificationToken = await generateVerificationToken(email)
+    await sendVerificationEmail(verificationToken.email, verificationToken.token)
   } catch (error) {
     console.error(error)
     return {
