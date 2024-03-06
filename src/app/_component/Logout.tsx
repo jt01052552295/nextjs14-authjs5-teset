@@ -7,9 +7,9 @@ const Logout = () => {
   const router = useRouter()
 
   const onLogout = () => {
-    // console.log(me) // 세션정보 확인가능함.
+    console.log(me) // 세션정보 확인가능함.
     signOut({ redirect: false }).then(() => {
-      router.replace('/login')
+      router.replace('/auth/login')
     })
   }
 

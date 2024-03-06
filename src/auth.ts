@@ -1,6 +1,10 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { NextResponse } from 'next/server'
+import { getUserById, getUserByEmail } from '@/data/user'
+import bcrypt from 'bcryptjs'
+import Github from 'next-auth/providers/github'
+import Google from 'next-auth/providers/google'
 
 export const {
   handlers: { GET, POST },
@@ -10,14 +14,19 @@ export const {
 } = NextAuth({
   pages: {
     // 로그인, 회원가입 url을 등록함.
-    signIn: '/login',
-    newUser: '/signup',
+    signIn: '/auth/login',
+    newUser: '/auth/signup',
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (account?.provider === 'credentials') {
         console.log('credentials - signin', user)
       }
+
+      const existingUser = await getUserById(user.id ?? '')
+      // Prevent sign in without email verification
+      if (!existingUser?.emailVerified) return false
+
       if (account?.provider === 'google') {
         console.log('google - signin', user)
         // return profile?.email_verified && profile?.email?.endsWith('@gmail.com')
@@ -37,31 +46,16 @@ export const {
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
-        const authResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            id: credentials.username,
-            password: credentials.password,
-          }),
-        })
+        const { email, password } = credentials
 
-        if (!authResponse.ok) {
-          return null
-        }
+        const user = await getUserByEmail(email as string)
+        if (!user || !user.password) return null
 
-        const user = await authResponse.json()
-        console.log('user', user)
-        // NextAuth 에서 user 타입이 id, name, email, image 고정되있어서 아래처럼 해줘야됨.
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          ...user,
-        }
+        const passwordsMatch = await bcrypt.compare(password as string, user.password)
+
+        if (passwordsMatch) return user
+
+        return null
       },
     }),
   ],

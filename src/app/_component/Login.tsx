@@ -1,40 +1,39 @@
 'use client'
 
 import Link from 'next/link'
-import { ChangeEventHandler, FormEventHandler, useState } from 'react'
-import { redirect, useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react' // 클라이언트
-// import { signIn } from '@/auth' // 서버액션
+import { ChangeEventHandler, FormEventHandler, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { FormErrors } from './Form-errors'
+import { useAction } from '@/hooks/use-action'
+import { actionAuthLogin } from '@/actions/auth/login'
 
 export default function LoginModal() {
-  const [id, setId] = useState('test')
+  const [email, setEmail] = useState('checkmate99@naver.com')
   const [password, setPassword] = useState('1111')
-  const [message, setMessage] = useState('')
   const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+
+  const { execute, fieldErrors } = useAction(actionAuthLogin, {
+    onSuccess: (data) => {
+      console.log(data)
+      router.push(`/profile`)
+    },
+    onError: (error) => {
+      console.error(error)
+      alert(error)
+    },
+  })
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
-    setMessage('')
-    try {
-      // auth.ts 에 등록한 signIn이 여기서 쓴다.
-      await signIn('credentials', {
-        username: id,
-        password: password,
-        redirect: false, // 서버쪽에서 리다이렉트 함.
-      })
-      router.replace('/profile') // 일단 클라이언트에서 리다이렉트
-    } catch (err) {
-      console.error(err)
-      setMessage('아이디와 비밀번호가 일치하지 않습니다.')
-    }
+
+    startTransition(() => {
+      execute({ email, password })
+    })
   }
 
-  const onClickClose = () => {
-    router.back()
-  }
-
-  const onChangeId: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setId(e.target.value)
+  const onChangeEmail: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setEmail(e.target.value)
   }
 
   const onChangePassword: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -46,17 +45,27 @@ export default function LoginModal() {
       <form onSubmit={onSubmit}>
         <div>
           <div>
-            <label htmlFor="id">아이디</label>
-            <input id="id" value={id} onChange={onChangeId} type="text" placeholder="" />
+            <label htmlFor="email">아이디</label>
+            <input id="email" value={email} onChange={onChangeEmail} type="text" placeholder="" />
           </div>
+          <div>
+            <FormErrors id="email" errors={fieldErrors} />
+          </div>
+
           <div>
             <label htmlFor="password">비밀번호</label>
             <input id="password" value={password} onChange={onChangePassword} type="password" placeholder="" />
           </div>
-        </div>
-        <div>{message}</div>
 
-        <button disabled={!id && !password}>로그인</button>
+          <div>
+            <FormErrors id="password" errors={fieldErrors} />
+          </div>
+        </div>
+
+        <button type="submit" disabled={(!email && !password) || isPending}>
+          {isPending ? 'loading...' : '로그인'}
+        </button>
+
         <br />
         <Link href="/auth/signup">가입페이지</Link>
       </form>
