@@ -62,12 +62,15 @@ export default function LoginModal() {
           </div>
         </div>
 
+        <Link href="/auth/reset">Forgot password</Link>
+        <br />
+
         <button type="submit" disabled={(!email && !password) || isPending}>
           {isPending ? 'loading...' : '로그인'}
         </button>
 
         <br />
-        <Link href="/auth/signup">가입페이지</Link>
+        <Link href="/auth/register">가입페이지</Link>
       </form>
     </div>
   )

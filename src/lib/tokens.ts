@@ -5,9 +5,32 @@ import 'dayjs/locale/ko'
 
 import { db } from '@/lib/db'
 import { getVerificationTokenByEmail } from '@/data/verificiation-token'
-
+import { getPasswordResetTokenByEmail } from '@/data/password-reset-token'
 // dayjs.locale('ko')
 // dayjs.extend(relativeTime)
+
+export const generatePasswordResetToken = async (email: string) => {
+  const token = uuidv4()
+  const expires = dayjs(new Date().getTime()).add(9, 'hour').add(5, 'minute').format()
+
+  const existingToken = await getPasswordResetTokenByEmail(email)
+
+  if (existingToken) {
+    await db.passwordResetToken.delete({
+      where: { id: existingToken.id },
+    })
+  }
+
+  const passwordResetToken = await db.passwordResetToken.create({
+    data: {
+      email,
+      token,
+      expires,
+    },
+  })
+
+  return passwordResetToken
+}
 
 export const generateVerificationToken = async (email: string) => {
   const token = uuidv4()

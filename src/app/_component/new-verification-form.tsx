@@ -6,6 +6,7 @@ import { newVerification } from '@/actions/auth/new-verification'
 import { useRouter } from 'next/navigation'
 import { FormError } from '@/app/_component/message/form-error'
 import { FormSuccess } from '@/app/_component/message/form-success'
+import Link from 'next/link'
 
 export const NewVerificationForm = () => {
   const router = useRouter()
@@ -42,6 +43,7 @@ export const NewVerificationForm = () => {
       {!success && !error && 'wait..'}
       {success && !error && <FormSuccess message={success} />}
       {!success && error && <FormError message={error} />}
+      <Link href="/auth/login">로그인 하러가기</Link>
     </div>
   )
 }
