@@ -58,7 +58,7 @@ export default function LoginModal() {
 
         <button disabled={!id && !password}>로그인</button>
         <br />
-        <Link href="/signup">가입페이지</Link>
+        <Link href="/auth/signup">가입페이지</Link>
       </form>
     </div>
   )

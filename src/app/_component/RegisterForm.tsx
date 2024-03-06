@@ -5,9 +5,6 @@ import { useAction } from '@/hooks/use-action'
 import { actionAuthSignUp } from '@/actions/auth/signup'
 import { FormErrors } from './Form-errors'
 
-import { generateVerificationToken } from '@/lib/tokens'
-// import { sendVerificationEmail } from '@/lib/mail'
-
 const RegisterForm = () => {
   const router = useRouter()
 
@@ -33,8 +30,9 @@ const RegisterForm = () => {
 
   const { execute, fieldErrors } = useAction(actionAuthSignUp, {
     onSuccess: (data) => {
-      alert('가입완료')
-      router.push(`/login`)
+      console.log(data)
+      alert('이메일확인필')
+      // router.push(`/auth/login`)
     },
     onError: (error) => {
       console.error(error)

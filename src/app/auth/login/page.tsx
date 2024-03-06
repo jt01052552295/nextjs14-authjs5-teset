@@ -1,5 +1,5 @@
 import React from 'react'
-import LoginModal from '../_component/Login'
+import LoginModal from '../../_component/Login'
 
 const LoginPage = () => {
   return (
