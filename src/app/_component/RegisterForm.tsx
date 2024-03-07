@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useAction } from '@/hooks/use-action'
 import { actionAuthSignUp } from '@/actions/auth/signup'
 import { FormErrors } from './Form-errors'
+import { Social } from './social'
 
 const RegisterForm = () => {
   const router = useRouter()
@@ -83,6 +84,10 @@ const RegisterForm = () => {
           </button>
         </div>
       </form>
+
+      <div>
+        <Social />
+      </div>
     </div>
   )
 }

@@ -6,6 +6,9 @@ import { PrismaAdapter } from '@auth/prisma-adapter'
 import { db } from '@/lib/db'
 import { getUserById } from '@/data/user'
 import { getAccountByUserId } from '@/data/account'
+import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import 'dayjs/locale/ko'
 
 export const {
   handlers: { GET, POST },
@@ -19,22 +22,26 @@ export const {
     newUser: '/auth/signup',
     error: '/auth/error',
   },
+  events: {
+    async linkAccount({ user }) {
+      console.log('linkAccount', user)
+      const verified = dayjs(new Date().getTime()).add(9, 'hour').format()
+      console.log('linkAccount', verified)
+      // await db.user.update({
+      //   where: { id: user.id },
+      //   data: { emailVerified: verified }
+      // })
+    },
+  },
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === 'credentials') {
-        // console.log('credentials - signin', user)
-      }
+      console.log(account?.provider)
+      // Allow OAuth without email verification
+      if (account?.provider !== 'credentials') return true
 
       const existingUser = await getUserById(user.id ?? '')
       // Prevent sign in without email verification
       if (!existingUser?.emailVerified) return false
-
-      if (account?.provider === 'google') {
-        // console.log('google - signin', user)
-      }
-      if (account?.provider === 'github') {
-        console.log('github - signin', user)
-      }
 
       return true // Do different verification for other providers that don't have `email_verified`
     },

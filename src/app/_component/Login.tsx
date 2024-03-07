@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { FormErrors } from './Form-errors'
 import { useAction } from '@/hooks/use-action'
 import { actionAuthLogin } from '@/actions/auth/login'
+import { Social } from './social'
 
 export default function LoginModal() {
   const [email, setEmail] = useState('checkmate99@naver.com')
@@ -72,6 +73,9 @@ export default function LoginModal() {
         <br />
         <Link href="/auth/register">가입페이지</Link>
       </form>
+      <div>
+        <Social />
+      </div>
     </div>
   )
 }

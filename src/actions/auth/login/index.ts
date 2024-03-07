@@ -40,7 +40,7 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     }
   }
 
-  revalidatePath(`/profile`)
+  revalidatePath(`/settings`)
   // 해당 /URL에 있던 캐시를 삭제하고 다시 생성해주는 함수인데 페이지를 다시 로드해주는 기능도 있음,
   // 새로고침이 아니라 차이점만 바꿔주는 새로고침
 
