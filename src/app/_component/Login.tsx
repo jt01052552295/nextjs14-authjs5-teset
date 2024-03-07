@@ -16,7 +16,7 @@ export default function LoginModal() {
   const { execute, fieldErrors } = useAction(actionAuthLogin, {
     onSuccess: (data) => {
       console.log(data)
-      router.push(`/profile`)
+      router.push(`/settings`)
     },
     onError: (error) => {
       console.error(error)

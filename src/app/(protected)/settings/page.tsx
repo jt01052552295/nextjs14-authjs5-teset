@@ -1,14 +1,13 @@
 import React from 'react'
 import { auth, signOut } from '@/auth'
 import { redirect } from 'next/navigation'
-import Logout from '../_component/Logout'
+import Logout from '@/app/_component/Logout'
 
-const ProfilePage = async () => {
-  // const { user }: any = await auth()
-  // console.log('ProfilePage', user)
+const SettingsPage = async () => {
+  const session = await auth()
   return (
     <div>
-      ProfilePage{' '}
+      {JSON.stringify(session)}
       <div className="ml-auto flex items-center gap-x-2">
         <Logout />
       </div>
@@ -16,4 +15,4 @@ const ProfilePage = async () => {
   )
 }
 
-export default ProfilePage
+export default SettingsPage
