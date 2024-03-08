@@ -13,3 +13,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
 
   await sendEmail(email, 'Reset your password', `<p>Click <a href="${resetLink}">here</a> to reset password.</p>`)
 }
+
+export const sendTwoFactorTokenEmail = async (email: string, token: string) => {
+  await sendEmail(email, '2FA Code', `<p>Your 2FA code: ${token}</p>`)
+}

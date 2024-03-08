@@ -7,4 +7,5 @@ export const ActionAuthLogin = z.object({
   password: z.string().min(3, {
     message: 'Minimum 3 characters required',
   }),
+  code: z.optional(z.string()),
 })
