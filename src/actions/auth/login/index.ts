@@ -1,4 +1,6 @@
 'use server'
+
+import { AuthError } from 'next-auth'
 import { signIn } from '@/auth'
 import bcrypt from 'bcryptjs'
 import { InputType, ReturnType } from './types'
@@ -14,6 +16,7 @@ import { getTwoFactorConfirmationByUserId } from '@/data/two-factor-confirmation
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import 'dayjs/locale/ko'
+import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 
 const handler = async (data: InputType): Promise<ReturnType> => {
   const { email, password, code } = data
@@ -80,13 +83,23 @@ const handler = async (data: InputType): Promise<ReturnType> => {
     await signIn('credentials', {
       email,
       password,
-      redirect: false,
+      redirectTo: DEFAULT_LOGIN_REDIRECT,
     })
   } catch (error) {
-    console.error(error)
-    return {
-      error: 'Failed to login..',
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return { error: 'Invalid credentials!' }
+        default:
+          return { error: 'Something went wrong!' }
+      }
     }
+
+    throw error
+    // console.error(error)
+    // return {
+    //   error: 'Failed to login..',
+    // }
   }
 
   revalidatePath(`/settings`)

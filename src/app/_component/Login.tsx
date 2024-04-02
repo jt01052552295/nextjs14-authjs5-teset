@@ -16,7 +16,7 @@ export default function LoginModal() {
   const urlError = searchParams.get('error') === 'OAuthAccountNotLinked' ? 'Email already in use with different provider!' : ''
 
   const [email, setEmail] = useState('checkmate99@naver.com')
-  const [password, setPassword] = useState('1111')
+  const [password, setPassword] = useState('2222')
   const [code, setCode] = useState('')
   const router = useRouter()
   const [isPending, startTransition] = useTransition()

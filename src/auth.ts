@@ -1,5 +1,4 @@
 import NextAuth from 'next-auth'
-
 import authConfig from '@/auth.config'
 import { UserRole } from '@prisma/client'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -19,7 +18,6 @@ export const {
   pages: {
     // 로그인, 회원가입 url을 등록함.
     signIn: '/auth/login',
-    newUser: '/auth/signup',
     error: '/auth/error',
   },
   events: {

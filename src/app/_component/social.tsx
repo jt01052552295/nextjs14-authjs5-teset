@@ -3,20 +3,15 @@
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
 import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
-import { oauthSignIn } from '@/actions/auth/oauth'
 
 export const Social = () => {
   const searchParams = useSearchParams()
   const callbackUrl = searchParams.get('callbackUrl') as string
 
-  //   const onOauth = async (provider: string) => {
-  //     await signIn(provider, {
-  //       callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
-  //     })
-  //   }
-
-  const onOauth = (provider: string) => {
-    oauthSignIn(provider, callbackUrl || DEFAULT_LOGIN_REDIRECT)
+  const onOauth = async (provider: string) => {
+    await signIn(provider, {
+      callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT,
+    })
   }
 
   return (
